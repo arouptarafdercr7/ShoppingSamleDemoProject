@@ -1,0 +1,73 @@
+﻿
+
+CREATE TABLE [dbo].[Customer] (
+    [Id]      INT          IDENTITY (1, 1) NOT NULL,
+    [Name]    VARCHAR (50) NULL,
+    [Email]   VARCHAR (50) NULL,
+    [Address] VARCHAR (50) NULL,
+    [Phone]   VARCHAR (50) NULL,
+    [Photo]   VARCHAR (50) NULL,
+    [DOE]     DATE         NULL,
+    PRIMARY KEY CLUSTERED ([Id] ASC)
+);
+
+
+
+CREATE TABLE [dbo].[Category] (
+    [CategoryId]          INT          IDENTITY (1, 1) NOT NULL,
+    [CategoryName] VARCHAR (50) NULL,
+    PRIMARY KEY CLUSTERED ([CategoryId] ASC)
+);
+
+CREATE TABLE [dbo].[Product] (
+    [Id]           INT           IDENTITY (1, 1) NOT NULL,
+    [ProductName]  VARCHAR (50)  NULL,
+    [Quantity]     INT           NULL,
+    [Price]        MONEY         NULL,
+    [ProductImage] VARCHAR (MAX) NULL,
+    [CategoryId]   INT           NULL,
+    PRIMARY KEY CLUSTERED ([Id] ASC),
+    CONSTRAINT [FK_Product_ToTable] FOREIGN KEY ([CategoryId]) REFERENCES [dbo].[Category] ([CategoryId])
+);
+
+
+CREATE TABLE [dbo].[Orders] (
+    [Id]         INT   IDENTITY (1, 1) NOT NULL,
+    [OrderDate]  DATE  NULL,
+    [GrandTotal] MONEY NULL,
+    [CustomerId] INT   NULL,
+    PRIMARY KEY CLUSTERED ([Id] ASC),
+    CONSTRAINT [FK_Orders_ToTable] FOREIGN KEY ([CustomerId]) REFERENCES [dbo].[Customer] ([Id])
+);
+
+
+CREATE TABLE [dbo].[OrderDetails] (
+    [Id]         INT          NOT NULL,
+    [PId]        INT NOT NULL,
+    [SalesQTY]   INT          NULL,
+    [SalesPrice] MONEY        NULL,
+    [SaleTotal]  AS           ([SalesQTY] * [SalesPrice]),
+    PRIMARY KEY CLUSTERED ([Id] ASC, [PId] ASC),
+    FOREIGN KEY ([Id]) REFERENCES [dbo].[Orders] ([Id]), 
+    CONSTRAINT [FK_OrderDetails_ToTable] FOREIGN KEY (pid) REFERENCES product(id)
+);
+
+
+
+
+CREATE TABLE [dbo].[tblRole]
+(
+	[rId] INT NOT NULL Identity PRIMARY KEY, 
+    [rName] VARCHAR(50) NULL
+);
+
+
+CREATE TABLE [dbo].[tblUser]
+(
+	[uId] INT NOT NULL Identity PRIMARY KEY, 
+	[uName] VARCHAR(50) Unique NULL, 
+    [uEmail] VARCHAR(50) NULL, 
+    [uPassword] VARCHAR(50) NULL, 
+    [rId] INT NULL, 
+    CONSTRAINT [FK_tblUser_ToTable] FOREIGN KEY ([rId]) REFERENCES [tblRole]([rId])
+);
